@@ -4,16 +4,30 @@ from .forms import TaleForm, QuestionForm
 import json
 import g4f
 
-def generate_question_content(tale_content):
+def generate_question(request, tale_id):
+    tale = get_object_or_404(Tale, pk=tale_id)
     prompt = "Сгенерируй по тексту вопрос с 4 вариантами ответов и верни в формате json(question, choices[], answer): "
+    text = tale.content
     response = g4f.ChatCompletion.create(
         model=g4f.models.gpt_35_turbo,
         messages=[{
             "role": "user",
-            "content": prompt + tale_content,
+            "content": prompt + text,
         }]
     )
-    return json.loads(response)
+    data = json.loads(response)
+    question = Question(
+        tale=tale,
+        question_text=data['question'],
+        choice_a=data['choices'][0],
+        choice_b=data['choices'][1],
+        choice_c=data['choices'][2],
+        choice_d=data['choices'][3],
+        correct_answer=data['answer'],
+    )
+    question.save()
+    print(question.choice_a)
+    return redirect('tale_detail', pk=tale_id)
 
 
 def tale_list(request):
@@ -59,29 +73,24 @@ def question_new(request, tale_id):
         if form.is_valid():
             question = form.save(commit=False)
             question.tale = tale
-            generated_content = generate_question_content(tale.content)
-            question.question_text = generated_content['question']
-            question.choice_a = generated_content['choices'][0]
-            question.choice_b = generated_content['choices'][1]
-            question.choice_c = generated_content['choices'][2]
-            question.choice_d = generated_content['choices'][3]
-            question.correct_answer = generated_content['answer']
             question.save()
-            return redirect('tale_detail', pk=tale_id)
+            return redirect('tale_detail', pk=tale_id)  # Убедитесь, что здесь передается правильный pk
     else:
         form = QuestionForm()
     return render(request, 'question_edit.html', {'form': form, 'tale': tale})
 
 def question_edit(request, pk):
     question = get_object_or_404(Question, pk=pk)
+    tale_id = question.tale.pk  # Убедитесь, что tale_id получает корректный pk из модели вопроса
     if request.method == "POST":
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             question.save()
-            return redirect('tale_detail', pk=question.tale.pk)
+            return redirect('tale_detail', pk=tale_id)  # Проверьте, что tale_id передаётся правильно
     else:
         form = QuestionForm(instance=question)
-    return render(request, 'question_edit.html', {'form': form})
+    return render(request, 'question_edit.html', {'form': form, 'tale': question.tale})
+
 
 def question_delete(request, pk):
     question = get_object_or_404(Question, pk=pk)

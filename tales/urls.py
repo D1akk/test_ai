@@ -10,4 +10,7 @@ urlpatterns = [
     path('tale/<int:tale_id>/questions/new/', views.question_new, name='question_new'),
     path('questions/<int:pk>/edit/', views.question_edit, name='question_edit'),
     path('questions/<int:pk>/delete/', views.question_delete, name='question_delete'),
+    # urls.py
+    path('tale/<int:tale_id>/generate_question/', views.generate_question, name='generate_question'),
+
 ]

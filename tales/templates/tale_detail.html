@@ -1,0 +1,19 @@
+<!-- Обновление tale_detail.html -->
+{% extends 'index.html' %} {% block content %}
+<p>{{ tale.content }}</p>
+<!-- Список вопросов -->
+<ul>
+  {% for question in tale.questions.all %}
+  <li>
+    {{ question.question_text }} -
+    <a href="{% url 'question_edit' pk=question.pk %}">Редактировать</a> |
+    <a href="{% url 'question_delete' pk=question.pk %}">Удалить</a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'question_new' tale_id=tale.pk %}">Добавить вопрос</a>
+<!-- Ссылки для сказки -->
+<a href="{% url 'tale_edit' pk=tale.pk %}">Редактировать сказку</a> |
+<a href="{% url 'tale_delete' pk=tale.pk %}">Удалить сказку</a> |
+<a href="{% url 'tale_list' %}">Назад к списку сказок</a>
+{% endblock %}

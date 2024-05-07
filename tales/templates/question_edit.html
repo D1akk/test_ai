@@ -1,0 +1,9 @@
+<!-- question_edit.html -->
+{% extends 'index.html' %} {% block content %}
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Сохранить</button>
+</form>
+<a href="{% url 'tale_detail' pk=tale.pk %}">Назад к деталям сказки</a>
+
+{% endblock %}

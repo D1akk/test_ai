@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block title %}Список сказок{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for tale in tales %}
+        <li>
+            {{ tale.title }} — 
+            <a href="{% url 'tale_detail' pk=tale.pk %}">Подробнее</a> | 
+            <a href="{% url 'tale_edit' pk=tale.pk %}">Редактировать</a> | 
+            <a href="{% url 'tale_delete' pk=tale.pk %}">Удалить</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'tale_new' %}">Добавить новую сказку</a>
+{% endblock %}

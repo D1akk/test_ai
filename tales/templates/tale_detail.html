@@ -17,8 +17,9 @@
 <a href="{% url 'tale_delete' pk=tale.pk %}">Удалить сказку</a> |
 <a href="{% url 'tale_list' %}">Назад к списку сказок</a>
 <form action="{% url 'generate_question' tale.pk %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Сгенерировать вопрос</button>
+    {% csrf_token %}
+    <textarea name="rules" placeholder="Введите правила для генерации вопроса (необязательно)"></textarea><br>
+    <button type="submit">Сгенерировать вопрос</button>
 </form>
 
 {% endblock %}

@@ -4,15 +4,25 @@ from .forms import TaleForm, QuestionForm
 import json
 import g4f
 
-def generate_question(request, tale_id):
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpRequest
+
+def generate_question(request: HttpRequest, tale_id):
     tale = get_object_or_404(Tale, pk=tale_id)
     prompt = "Сгенерируй по тексту вопрос с 4 вариантами ответов и верни в формате json(question, choices[], answer): "
     text = tale.content
+    rules = request.POST.get('rules', '')  # Получаем правила из формы
+
+    if rules.strip():  # Проверяем, что правила не пустые
+        full_prompt = f"{prompt}{text} {rules.strip()}"
+    else:
+        full_prompt = f"{prompt}{text}"
+
     response = g4f.ChatCompletion.create(
         model=g4f.models.gpt_35_turbo,
         messages=[{
             "role": "user",
-            "content": prompt + text,
+            "content": full_prompt,
         }]
     )
     data = json.loads(response)
@@ -26,7 +36,6 @@ def generate_question(request, tale_id):
         correct_answer=data['answer'],
     )
     question.save()
-    print(question.choice_a)
     return redirect('tale_detail', pk=tale_id)
 
 

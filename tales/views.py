@@ -3,29 +3,31 @@ from .models import Tale, Question
 from .forms import TaleForm, QuestionForm
 import json
 import g4f
-
+import re
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest
 
 # question
 def generate_question(request: HttpRequest, tale_id):
     tale = get_object_or_404(Tale, pk=tale_id)
-    prompt = "Сгенерируй по тексту вопрос с 4 вариантами ответов и верни в формате json(question, choices[], answer): "
-    text = tale.content
+    prompt = "Есть сказка с переводом на английский. Сгенерируй по нему вопрос на русском или английском с 4 вариантами ответов и верни строго только в формате json(question, choices[], answer) и никак иначе."
+    text = clean_text(tale.content)
+    translate = clean_text(tale.translated_content)
     rules = request.POST.get('rules', '')  # Получаем правила из формы
 
     if rules.strip():  # Проверяем, что правила не пустые
-        full_prompt = f"{prompt}{text} {rules.strip()}"
+       full_prompt = f"{prompt} \n 1) На русском: {text} \n Перевод: {translate} <br> Правила следующие: {rules.strip()}"
     else:
-        full_prompt = f"{prompt}{text}"
+        full_prompt = f"{prompt} \n 1) На русском: {text} \n Перевод: {translate} "
 
     response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_35_turbo,
+        model=g4f.models.gpt_35_turbo_16k,
         messages=[{
             "role": "user",
             "content": full_prompt,
         }]
     )
+    print(full_prompt)
     data = json.loads(response)
     question = Question(
         tale=tale,
@@ -39,7 +41,20 @@ def generate_question(request: HttpRequest, tale_id):
     question.save()
     return redirect('tale_detail', pk=tale_id)
 
+def clean_text(text):
+    # Удаление HTML-тегов
+    clean_text = re.sub(r'<.*?>', '', text)
+    # Замена HTML-символов на их эквивалент
+    clean_text = re.sub(r'&quot;', '"', clean_text)
+    clean_text = re.sub(r'&ldquo;', '"', clean_text)
+    clean_text = re.sub(r'&rdquo;', '"', clean_text)
+    clean_text = re.sub(r'&nbsp;', ' ', clean_text)
+    clean_text = re.sub(r'&mdash;', '—', clean_text)
+    clean_text = re.sub(r'&#39;', '', clean_text)
+    clean_text = re.sub(r'&rsquo;', '', clean_text)
+    # Другие замены или удаления символов, если необходимо
 
+    return clean_text
 
 def tale_list(request):
     tales = Tale.objects.all()

@@ -1,20 +1,28 @@
-
 {% extends 'index.html' %} {% block content %}
 <h1>{{tale.title}}</h1>
 <h2>Русская версия</h2>
 <div>{{ tale.content | safe }}</div>
-<h2 style="margin-top: 20px;">Английская версия</h2>
+<h2 style="margin-top: 20px">Английская версия</h2>
 <div>{{tale.translated_content | safe}}</div>
 
-<ul>
-  {% for question in tale.questions.all %}
-  <li>
-    {{ question.question_text }} -
-    <a href="{% url 'question_edit' pk=question.pk %}">Редактировать</a>
-    <a href="{% url 'question_delete' pk=question.pk %}">Удалить</a>
-  </li>
-  {% endfor %}
-</ul>
+{% if tale.questions.all %}
+  <h3>Вопросы по сказке</h3>
+
+  <div class="list-container">
+    <ul class="tale-list">
+      {% for question in tale.questions.all %}
+      <li class="tale-item">
+        <div class="tale-title">{{ question.question_text }}</div>
+        <div class="tale-buttons">
+          <a href="{% url 'question_edit' pk=question.pk %}">Редактировать</a>
+          <a href="{% url 'question_delete' pk=question.pk %}">Удалить</a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+{% endif %}
 <a href="{% url 'question_new' tale_id=tale.pk %}">Добавить вопрос</a>
 
 <a href="{% url 'tale_edit' pk=tale.pk %}">Редактировать сказку</a>

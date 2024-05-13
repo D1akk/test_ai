@@ -4,7 +4,7 @@ from .models import Tale, Question
 class TaleForm(forms.ModelForm):
     class Meta:
         model = Tale
-        fields = ('title', 'content')
+        fields = ('title', 'content', 'translated_content')
 
 class QuestionForm(forms.ModelForm):
     class Meta:

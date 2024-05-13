@@ -7,6 +7,7 @@ import g4f
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest
 
+# question
 def generate_question(request: HttpRequest, tale_id):
     tale = get_object_or_404(Tale, pk=tale_id)
     prompt = "Сгенерируй по тексту вопрос с 4 вариантами ответов и верни в формате json(question, choices[], answer): "
@@ -37,6 +38,7 @@ def generate_question(request: HttpRequest, tale_id):
     )
     question.save()
     return redirect('tale_detail', pk=tale_id)
+
 
 
 def tale_list(request):

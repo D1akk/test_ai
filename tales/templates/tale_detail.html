@@ -1,25 +1,37 @@
-<!-- Обновление tale_detail.html -->
+
 {% extends 'index.html' %} {% block content %}
-<p>{{ tale.content }}</p>
-<!-- Список вопросов -->
+<h1>{{tale.title}}</h1>
+<h2>Русская версия</h2>
+<div>{{ tale.content | safe }}</div>
+<h2 style="margin-top: 20px;">Английская версия</h2>
+<div>{{tale.translated_content | safe}}</div>
+
 <ul>
   {% for question in tale.questions.all %}
   <li>
     {{ question.question_text }} -
-    <a href="{% url 'question_edit' pk=question.pk %}">Редактировать</a> |
+    <a href="{% url 'question_edit' pk=question.pk %}">Редактировать</a>
     <a href="{% url 'question_delete' pk=question.pk %}">Удалить</a>
   </li>
   {% endfor %}
 </ul>
 <a href="{% url 'question_new' tale_id=tale.pk %}">Добавить вопрос</a>
-<!-- Ссылки для сказки -->
-<a href="{% url 'tale_edit' pk=tale.pk %}">Редактировать сказку</a> |
-<a href="{% url 'tale_delete' pk=tale.pk %}">Удалить сказку</a> |
+
+<a href="{% url 'tale_edit' pk=tale.pk %}">Редактировать сказку</a>
+<a href="{% url 'tale_delete' pk=tale.pk %}">Удалить сказку</a>
 <a href="{% url 'tale_list' %}">Назад к списку сказок</a>
-<form action="{% url 'generate_question' tale.pk %}" method="post">
-    {% csrf_token %}
-    <textarea name="rules" placeholder="Введите правила для генерации вопроса (необязательно)"></textarea><br>
-    <button type="submit">Сгенерировать вопрос</button>
+<form
+  action="{% url 'generate_question' tale.pk %}"
+  method="post"
+  style="margin-top: 10px"
+>
+  {% csrf_token %}
+  <textarea
+    name="rules"
+    placeholder="Введите правила для генерации вопроса (необязательно)"
+  ></textarea
+  ><br />
+  <button type="submit">Сгенерировать вопрос</button>
 </form>
 
 {% endblock %}

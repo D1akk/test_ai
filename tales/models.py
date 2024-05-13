@@ -1,8 +1,10 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 class Tale(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
-    content = models.TextField(verbose_name='Текст')
+    content = RichTextField(verbose_name='Текст')
+    translated_content = RichTextField(verbose_name='Перевод')
 
     def __str__(self):
         return self.title

@@ -1,16 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>{% block title %}Сказки{% endblock %}</title>
-</head>
-<body>
+    <style>
+      /* Global styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px; /* добавленные отступы слева и справа */
+        box-sizing: border-box; /* учитываем padding в расчете ширины */
+      }
+
+      header {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 36px;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+      }
+
+      li {
+        margin-top: 10px;
+      }
+      /* Form styles */
+      form {
+        margin-bottom: 20px;
+      }
+
+      form textarea {
+        width: calc(100% - 22px);
+        height: 100px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
+
+      form button {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      form button:hover {
+        background-color: #555;
+      }
+
+      /* Link styles */
+      a {
+        color: #333;
+        text-decoration: none;
+        margin-right: 10px;
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #333;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
+
+      a:hover {
+        background-color: #333;
+        color: #fff;
+        text-decoration: none;
+      }
+      .list-container {
+        text-align: center;
+      }
+
+      .tale-list {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .tale-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .tale-title {
+        flex: 1;
+        text-align: left;
+      }
+
+      .tale-buttons {
+        flex: 0 0 auto;
+      }
+
+      .add-button {
+        display: block;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
     <header>
-        <h1>{% block header %}Сказки{% endblock %}</h1>
+      <h1>{% block header %}Сказки{% endblock %}</h1>
     </header>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-</body>
+    <main class="container">{% block content %} {% endblock %}</main>
+  </body>
 </html>
